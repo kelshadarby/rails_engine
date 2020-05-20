@@ -53,4 +53,22 @@ RSpec.describe "Merchant API" do
     expect(response).to be_successful
     expect{Item.find(item.id).to raise_error(ActoveRecord::RecordNotFound)}
   end
+  it "Merchant Item Relationship" do
+    merchant = create(:merchant)
+    item_1 = create(:item, merchant_id: merchant.id)
+    item_2 = create(:item, merchant_id: merchant.id)
+    item_3 = create(:item, merchant_id: merchant.id)
+    item_4 = create(:item, merchant_id: merchant.id)
+
+    get "/api/v1/merchants/#{merchant.id}/items"
+    items_response = JSON.parse(response.body)
+
+    expect(response).to be_successful
+    expect(items_response.first["id"]).to eq(item_1.id)
+    expect(items_response.first["name"]).to eq(item_1.name)
+    expect(items_response.first["description"]).to eq(item_1.description)
+    expect(items_response.first["id"]).to be_a Integer
+    expect(items_response.first["name"]).to be_a String
+    expect(items_response.first["description"]).to be_a String
+  end
 end
