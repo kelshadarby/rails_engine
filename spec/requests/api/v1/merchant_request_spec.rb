@@ -10,7 +10,7 @@ RSpec.describe "Merchant API" do
 
     merchants = JSON.parse(response.body)
 
-    expect(merchants.count).to eq(4)
+    expect(merchants["data"].count).to eq(4)
   end
   it "Merchant Show" do
     id = create(:merchant).id
@@ -20,7 +20,7 @@ RSpec.describe "Merchant API" do
     merchant = JSON.parse(response.body)
 
     expect(response).to be_successful
-    expect(merchant["id"]).to eq(id)
+    expect(merchant["data"]["id"]).to eq("#{id}")
   end
   it "Merchant Creation" do
     merchant_params = {
@@ -54,21 +54,22 @@ RSpec.describe "Merchant API" do
     expect{Item.find(item.id).to raise_error(ActoveRecord::RecordNotFound)}
   end
   it "Merchant Item Relationship" do
-    merchant = create(:merchant)
-    item_1 = create(:item, merchant_id: merchant.id)
-    item_2 = create(:item, merchant_id: merchant.id)
-    item_3 = create(:item, merchant_id: merchant.id)
-    item_4 = create(:item, merchant_id: merchant.id)
+    merchant_1 = create(:merchant)
+    item_1 = create(:item, merchant_id: merchant_1.id)
+    item_2 = create(:item, merchant_id: merchant_1.id)
+    item_3 = create(:item, merchant_id: merchant_1.id)
+    item_4 = create(:item, merchant_id: merchant_1.id)
+
+    merchant_2 = create(:merchant)
+    item_5 = create(:item, merchant_id: merchant_2.id)
+    item_6 = create(:item, merchant_id: merchant_2.id)
+    item_7 = create(:item, merchant_id: merchant_2.id)
+    item_8 = create(:item, merchant_id: merchant_2.id)
 
     get "/api/v1/merchants/#{merchant.id}/items"
-    items_response = JSON.parse(response.body)
+    items_response = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to be_successful
-    expect(items_response.first["id"]).to eq(item_1.id)
-    expect(items_response.first["name"]).to eq(item_1.name)
-    expect(items_response.first["description"]).to eq(item_1.description)
-    expect(items_response.first["id"]).to be_a Integer
-    expect(items_response.first["name"]).to be_a String
-    expect(items_response.first["description"]).to be_a String
+    expect(items_response[:data].count).to eq(4)
   end
 end
