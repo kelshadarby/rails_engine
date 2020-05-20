@@ -13,7 +13,7 @@ RSpec.describe "Items API" do
 
     items = JSON.parse(response.body)
 
-    expect(items.count).to eq(3)
+    expect(items["data"].count).to eq(3)
   end
   it "Item Show" do
     merchant = create(:merchant)
@@ -24,7 +24,7 @@ RSpec.describe "Items API" do
     item = JSON.parse(response.body)
 
     expect(response).to be_successful
-    expect(item["id"]).to eq(id)
+    expect(item["data"]["id"]).to eq("#{id}")
   end
   it "Item Creation" do
     merchant = create(:merchant)
@@ -69,12 +69,12 @@ RSpec.describe "Items API" do
   it "Item Merchant Relationship" do
     merchant = create(:merchant)
     item = create(:item, merchant_id: merchant.id)
-  
+
     get "/api/v1/items/#{item.id}/merchant"
     merchant_response = JSON.parse(response.body)
 
     expect(response).to be_successful
     expect(item["merchant_id"]).to eq(merchant.id)
-    expect(merchant_response["name"]).to eq(merchant.name)
+    expect(merchant_response["data"]["attributes"]["name"]).to eq(merchant.name)
   end
 end
