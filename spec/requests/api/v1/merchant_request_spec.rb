@@ -64,9 +64,8 @@ RSpec.describe "Merchant API" do
     item_5 = create(:item, merchant_id: merchant_2.id)
     item_6 = create(:item, merchant_id: merchant_2.id)
     item_7 = create(:item, merchant_id: merchant_2.id)
-    item_8 = create(:item, merchant_id: merchant_2.id)
 
-    get "/api/v1/merchants/#{merchant.id}/items"
+    get "/api/v1/merchants/#{merchant_1.id}/items"
     items_response = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to be_successful
