@@ -14,8 +14,6 @@ RSpec.describe "Items API" do
     items = JSON.parse(response.body)
 
     expect(items["data"].count).to eq(3)
-    require "pry"; binding.pry
-    expect(item[:attributes]).to have_key(:merchant_id)
   end
   it "Item Show" do
     merchant = create(:merchant)
